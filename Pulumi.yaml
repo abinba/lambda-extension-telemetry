@@ -1,0 +1,6 @@
+name: lambda-extension-test
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: Lambda Extension Test
