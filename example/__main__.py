@@ -9,6 +9,11 @@ from pulumi_docker import RegistryImage, RegistryArgs, DockerBuildArgs, Image
 CONTEXT = "."
 
 LAMBDA_ROLE = os.environ.get("LAMBDA_ROLE")
+
+LOKI_USER = os.environ.get("LOKI_USER")
+LOKI_HOST = os.environ.get("LOKI_HOST")
+LOKI_API_KEY = os.environ.get("LOKI_API_KEY")
+
 IMAGE_PLATFORM = "linux/amd64"
 
 
@@ -72,6 +77,13 @@ lambda_function = aws.lambda_.Function(
     role=LAMBDA_ROLE,
     memory_size=1024,
     timeout=200,
+    environment=aws.lambda_.FunctionEnvironmentArgs(
+        variables={
+            "LOKI_USER": LOKI_USER,
+            "LOKI_API_KEY": LOKI_API_KEY,
+            "LOKI_HOST": LOKI_HOST,
+        },
+    ),
     opts=pulumi.ResourceOptions(
         depends_on=[
             ecr_repository,

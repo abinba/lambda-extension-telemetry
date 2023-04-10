@@ -1,9 +1,9 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: MIT-0
-
+import logging
 import os
 import requests
 import json
+
+logger = logging.getLogger(__name__)
 
 TELEMETRY_API_URL = "http://{0}/2022-07-01/telemetry".format(os.getenv("AWS_LAMBDA_RUNTIME_API"))
 LAMBDA_EXTENSION_IDENTIFIER_HEADER_KEY = "Lambda-Extension-Identifier"
@@ -13,9 +13,9 @@ MAX_BYTES = 256 * 1024  # Maximum size in bytes that the logs are buffered in me
 MAX_ITEMS = 10000  # Maximum number of events that are buffered in memory.
 
 
-def subscibe_listener(extension_id, listener_url):
-    print(
-        "[telemetry_api_client.subscibe_listener] Subscribing Extension to receive telemetry data. "
+def subscribe_listener(extension_id, listener_url):
+    logger.debug(
+        "Subscribing Extension to receive telemetry data. "
         "ExtenionsId: {0}, "
         "listener url: {1}, "
         "telemetry api url: {2}".format(extension_id, listener_url, TELEMETRY_API_URL)
@@ -48,23 +48,16 @@ def subscibe_listener(extension_id, listener_url):
         )
 
         if response.status_code == 200:
-            print("[telemetry_api_client.subscibe_listener] Extension successfully subscribed to telemetry api",
-                  response.text, flush=True)
+            logger.info(f"Extension successfully subscribed to telemetry api {response.text}")
         elif response.status_code == 202:
-            print(
-                "[telemetry_api_client.subscibe_listener] Telemetry API not supported. "
-                "Are you running the extension locally?",
-                flush=True,
-            )
+            logger.debug("Telemetry API not supported. Are you running the extension locally?")
         else:
-            print(
-                "[telemetry_api_client.subscibe_listener] Subsciption to telmetry API failed. ",
-                "status code: ", response.status_code,
-                "response text: ", response.text,
-                flush=True,
+            logger.debug(
+                "Subscription to telemetry API failed. "
+                f"Status code: {response.status_code}, response text: {response.text}"
             )
         return extension_id
 
     except Exception as e:
-        print("Error registering extension.", e, flush=True)
+        logger.debug(f"Error registering extension: {e}")
         raise Exception("Error setting AWS_LAMBDA_RUNTIME_API", e)

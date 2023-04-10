@@ -1,10 +1,10 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: MIT-0
-
+import logging
 import os
 import sys
 import requests
 import json
+
+logger = logging.getLogger(__name__)
 
 LAMBDA_EXTENSION_NAME_HEADER_KEY = "Lambda-Extension-Name"
 LAMBDA_EXTENSION_IDENTIFIER_HEADER_KEY = "Lambda-Extension-Identifier"
@@ -12,8 +12,7 @@ REGISTRATION_REQUEST_BASE_URL = "http://{0}/2020-01-01/extension".format(os.gete
 
 
 def register_extension(extension_name):
-    print("[extension_api_client.register_extension] Registering Extension using {0}".format(
-        REGISTRATION_REQUEST_BASE_URL))
+    logger.debug(f"Registering Extension using {REGISTRATION_REQUEST_BASE_URL}")
 
     try:
         registration_request_body = {
@@ -35,21 +34,20 @@ def register_extension(extension_name):
 
         if response.status_code == 200:
             extension_id = response.headers[LAMBDA_EXTENSION_IDENTIFIER_HEADER_KEY]
-            print("[extension_api_client.register_extension] Registration success with extensionId {0}".format(
-                extension_id), flush=True)
+            logger.info(f"Registration success with extensionId {extension_id}")
         else:
-            print("[extension_api_client.register_extension] Error Registering extension: ", response.text, flush=True)
+            logger.error(f"Error Registering extension: {response.text}")
             # Fail the extension
             sys.exit(1)
 
         return extension_id
 
     except Exception as e:
-        print("[extension_api_client.register_extension] Error registering extension: ", e, flush=True)
+        logger.error(f"Error registering extension: {e}")
         raise Exception("Error setting AWS_LAMBDA_RUNTIME_API", e)
 
 
-def next(extension_id):
+def next_event(extension_id):
     try:
         next_event_request_header = {
             "Content-Type": "application/json",
@@ -62,8 +60,7 @@ def next(extension_id):
         )
 
         if response.status_code != 200:
-            print("[extension_api_client.next] Failed receiving next event ", response.status_code, response.text,
-                  flush=True)
+            logger.error(f"Failed receiving next event {response.status_code} {response.text}")
             # Fail extension with non-zero exit code
             sys.exit(1)
 
@@ -71,5 +68,5 @@ def next(extension_id):
         return event_data
 
     except Exception as e:
-        print("[extension_api_client.next] Error registering extension.", e, flush=True)
+        logger.error(f"Error registering extension: {e}")
         raise Exception("Error setting AWS_LAMBDA_RUNTIME_API", e)
