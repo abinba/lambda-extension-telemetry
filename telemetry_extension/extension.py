@@ -7,7 +7,7 @@ from pathlib import Path
 from queue import Queue
 
 from extensions_api_client import register_extension, next_event
-from logging_config import setup_logging
+from logging_config import setup_logging, LOKI_API_KEY
 from telemetry_http_listener import start_http_listener
 from telemetry_api_client import subscribe_listener
 from telemetry_dispatcher import dispatch_telemetry
@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 def main():
+    if not LOKI_API_KEY:
+        return
+
     setup_logging(debug=False, session_uuid=str(uuid.uuid4()))
     logger.info("Starting the Telemetry API Extension")
 
