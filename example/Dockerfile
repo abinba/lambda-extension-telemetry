@@ -8,7 +8,7 @@ WORKDIR /opt
 COPY --from=layer /opt/ .
 
 WORKDIR ${LAMBDA_TASK_ROOT}
-COPY handler/handler.py .
+COPY handler.py .
 
 RUN python3 -m pip install --upgrade pip &&  \
     python3 -m pip install requests -q && \

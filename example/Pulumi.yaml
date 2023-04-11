@@ -1,6 +1,6 @@
-name: lambda-extension-test
+name: loki-lambda-extension
 runtime:
   name: python
   options:
     virtualenv: venv
-description: Lambda Extension Test
+description: Loki Lambda Extension Test

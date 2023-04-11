@@ -4,7 +4,7 @@ import random
 
 import pulumi
 import pulumi_aws as aws
-from pulumi_docker import RegistryImage, RegistryArgs, DockerBuildArgs, Image
+from pulumi_docker import RegistryArgs, DockerBuildArgs, Image
 
 CONTEXT = "."
 
@@ -42,36 +42,20 @@ ecr_repository = aws.ecr.Repository(
 
 registry_info = ecr_repository.registry_id.apply(get_registry_info)
 
-extension_image = Image(
-    'lambda-extension-test-extension-image',
-    build=DockerBuildArgs(
-        context=CONTEXT,
-        platform=IMAGE_PLATFORM,
-        dockerfile=os.path.join(CONTEXT, "extension.Dockerfile"),
-    ),
-    image_name=ecr_repository.repository_url.apply(lambda x: f"{x}:ext-1"),
-    registry=registry_info,
-)
-
 function_handler_image = Image(
     'lambda-extension-test-image',
     build=DockerBuildArgs(
         context=CONTEXT,
         platform=IMAGE_PLATFORM,
-        dockerfile=os.path.join(CONTEXT, "handler.Dockerfile"),
+        dockerfile=os.path.join(CONTEXT, "Dockerfile"),
     ),
     image_name=ecr_repository.repository_url.apply(lambda x: f"{x}:{get_ecr_tag()}"),
     registry=registry_info,
-    opts=pulumi.ResourceOptions(
-        depends_on=[
-            extension_image,
-        ]
-    )
 )
 
 lambda_function = aws.lambda_.Function(
     "lambda-extension-test",
-    description="Lambda function for testing extensions",
+    description="Lambda function for testing loki lambda extension",
     package_type="Image",
     image_uri=function_handler_image.image_name,
     role=LAMBDA_ROLE,
