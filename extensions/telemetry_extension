@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -euo pipefail
 
 OWN_FILENAME="$(basename $0)"
