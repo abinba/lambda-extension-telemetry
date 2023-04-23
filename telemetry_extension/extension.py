@@ -1,13 +1,11 @@
 import logging
-import sys
 import time
-import uuid
 
 from pathlib import Path
 from queue import Queue
 
 from extensions_api_client import register_extension, next_event
-from logging_config import setup_logging, LOKI_API_KEY
+from logging_config import setup_logging, LOKI_API_KEY, SESSION_UUID
 from telemetry_http_listener import start_http_listener
 from telemetry_api_client import subscribe_listener
 from telemetry_dispatcher import dispatch_telemetry
@@ -20,7 +18,7 @@ def main():
     if not LOKI_API_KEY:
         return
 
-    setup_logging(debug=False, session_uuid=str(uuid.uuid4()))
+    setup_logging(debug=False, session_uuid=SESSION_UUID)
     logger.info("Starting the Telemetry API Extension")
 
     extension_name = Path(__file__).parent.name
@@ -48,7 +46,8 @@ def main():
             time.sleep(2)
             logger.info("Shutdown initialized")
             dispatch_telemetry(queue, True)
-            sys.exit(0)
+            # sys.exit(0)
+            break
 
 
 if __name__ == "__main__":
