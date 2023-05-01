@@ -5,7 +5,7 @@ from pathlib import Path
 from queue import Queue
 
 from extensions_api_client import register_extension, next_event
-from logging_config import setup_logging, LOKI_API_KEY, SESSION_UUID
+from logging_config import setup_logging, LOKI_API_KEY, SESSION_UUID, LOKI_PUSH_URI
 from telemetry_http_listener import start_http_listener
 from telemetry_api_client import subscribe_listener
 from telemetry_dispatcher import dispatch_telemetry
@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 def main():
+    logger.info(f"Loki URL: {LOKI_PUSH_URI}")
+
     if not LOKI_API_KEY:
         return
 
