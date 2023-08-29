@@ -27,7 +27,7 @@ def start_http_listener(queue):
         logger.error("server_thread has timed out before starting")
         raise Exception("server_thread has timed out before starting")
 
-    logger.info("Started http listener")
+    logger.debug("Started http listener")
     listener_url = "http://{0}:{1}".format(LISTENER_ADDRESS,LISTENER_PORT)
     return listener_url
 

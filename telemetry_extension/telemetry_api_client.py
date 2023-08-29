@@ -48,7 +48,7 @@ def subscribe_listener(extension_id, listener_url):
         )
 
         if response.status_code == 200:
-            logger.info(f"Extension successfully subscribed to telemetry api {response.text}")
+            logger.debug(f"Extension successfully subscribed to telemetry api {response.text}")
         elif response.status_code == 202:
             logger.debug("Telemetry API not supported. Are you running the extension locally?")
         else:

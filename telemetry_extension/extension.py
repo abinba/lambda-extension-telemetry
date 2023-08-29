@@ -15,13 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    logger.info(f"Loki URL: {LOKI_PUSH_URI}")
-
     if not LOKI_API_KEY:
         return
 
     setup_logging(debug=False, session_uuid=SESSION_UUID)
-    logger.info("Starting the Telemetry API Extension")
+    logger.debug("Starting the Telemetry API Extension")
 
     extension_name = Path(__file__).parent.name
     logger.debug("Extension Main: Registring the extension using extension name: {0}".format(extension_name))

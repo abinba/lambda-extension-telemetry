@@ -1,6 +1,6 @@
 import os
 
-versions = ["3.7", "3.8", "3.9"]
+versions = ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
 
 def get_template() -> str:

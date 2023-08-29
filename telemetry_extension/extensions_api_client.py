@@ -36,14 +36,14 @@ def register_extension(extension_name):
             extension_id = response.headers[LAMBDA_EXTENSION_IDENTIFIER_HEADER_KEY]
             logger.info(f"Registration success with extensionId {extension_id}")
         else:
-            logger.error(f"Error Registering extension: {response.text}")
+            logger.error(f"Error registering logging extension: {response.text}")
             # Fail the extension
             sys.exit(1)
 
         return extension_id
 
     except Exception as e:
-        logger.error(f"Error registering extension: {e}")
+        logger.error(f"Error registering logging extension: {e}")
         raise Exception("Error setting AWS_LAMBDA_RUNTIME_API", e)
 
 
